@@ -1,0 +1,18 @@
+// 1. Track M365 Security Configuration Drifts & Audit Failures
+AuditLogs
+| where TimeGenerated > ago(7d)
+| where Operation in ("Set-Mailbox", "Set-AdminAuditLogConfig", "Update tenant branding")
+| summarize DriftEvents = count() by Operation, ResultStatus, InitiatedBy = tostring(InitiatedBy.user.userPrincipalName)
+| order by DriftEvents desc;
+
+// 2. DORA / NIS2 Aligned High-Severity Incident Dashboard
+SecurityIncident
+| where TimeGenerated > ago(30d)
+| where Severity in ("High", "Critical")
+| extend FrameworkTag = case(
+    Title has "MFA" or Title has "Legacy Auth", "NIS2 - Access Control",
+    Title has "Privileged" or Title has "Admin", "DORA - ICT Risk Management",
+    "General Compliance"
+)
+| summarize IncidentCount = count() by FrameworkTag, Status, Severity
+| order by IncidentCount desc;

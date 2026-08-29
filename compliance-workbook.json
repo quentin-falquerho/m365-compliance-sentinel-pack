@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "resources": [
+    {
+      "type": "Microsoft.Insights/workbooks",
+      "apiVersion": "2022-04-01",
+      "name": "m365-dora-nis2-compliance-dashboard",
+      "location": "[resourceGroup().location]",
+      "kind": "shared",
+      "properties": {
+        "displayName": "M365 DORA & NIS2 Compliance Monitor",
+        "serializedData": "{\"version\": \"Notebook/1.0\", \"items\": [{\"type\": 3, \"content\": {\"query\": \"SecurityIncident | summarize count() by Severity\", \"style\": \"bars\"}}]}",
+        "category": "Security"
+      }
+    }
+  ]
+}
